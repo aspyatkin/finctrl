@@ -279,5 +279,23 @@ def show_monthly_report(year, month):
         click.echo('DEBIT: {0} {1}'.format(amount, currency.sign))
 
 
+@cli.command()
+@click.argument('year', type=click.INT, default=date.today().year)
+@click.argument('month', type=click.INT, default=date.today().month)
+@click.argument('day', type=click.INT, default=date.today().day)
+def show_balance_report(year, month, day):
+    init_db()
+    balance_date = date(year, month, day)
+    account_balance_entries = AccountBalance.select().where(AccountBalance.date == balance_date)
+    balance_map = {}
+    for entry in account_balance_entries:
+        if entry.account.currency not in balance_map:
+            balance_map[entry.account.currency] = Decimal('0.00')
+        balance_map[entry.account.currency] += entry.balance
+
+    for currency, balance in balance_map.items():
+        click.echo('{0} - {1} {2}'.format(currency.code, balance, currency.sign))
+
+
 if __name__ == '__main__':
     cli()
