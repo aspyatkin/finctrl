@@ -109,6 +109,16 @@ def create_account(name, currency_code):
 
 
 @cli.command()
+@click.argument('account_id', type=click.INT)
+@click.argument('name')
+def rename_account(account_id, name):
+    init_db()
+    account = Account.get(Account.id == account_id)
+    account.name = name
+    account.save()
+
+
+@cli.command()
 def list_accounts():
     init_db()
     accounts = Account.select()
@@ -238,6 +248,14 @@ def remove_account_transaction(transaction_id):
     init_db()
     transaction = AccountTransaction.get(AccountTransaction.id == transaction_id)
     transaction.delete_instance()
+
+
+@cli.command()
+@click.argument('account_id', click.INT)
+def remove_account(account_id):
+    init_db()
+    account = Account.get(Account.id == account_id)
+    account.delete_instance()
 
 
 @cli.command()
