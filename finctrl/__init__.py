@@ -10,12 +10,13 @@ from peewee import (
     TextField
 )
 
+import os
 import click
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from enum import IntEnum
 
-db = SqliteDatabase('finance.db')
+db = SqliteDatabase(os.path.join(os.getcwd(), 'finance.db'))
 
 
 class Currency(Model):
